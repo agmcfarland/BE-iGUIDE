@@ -1,0 +1,17 @@
+Package: BEiGUIDE
+Title: Detect and quantify base editing using iGUIDE
+Version: 1.3
+Authors@R: 
+    person("Alexander", "McFarland", , "alex.925@gmail.com", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0002-1803-3623"))
+Description: Functions and workflows for base edit detection using iGUIDE.
+License: MIT + file LICENSE
+URL: https://github.com/agmcfarland/BEiGUIDE
+BugReports: https://github.com/agmcfarland/BEiGUIDE/issues
+biocViews: 
+Encoding: UTF-8
+Language: en
+LazyData: true
+LazyDataCompression: xz
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.2.0
