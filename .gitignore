@@ -12,3 +12,4 @@ sftp-config.json
 
 /data-raw/
 tests/testthat/Rplots.pdf
+*.pptx
