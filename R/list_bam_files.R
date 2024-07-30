@@ -8,6 +8,8 @@
 #' @return A 1-D matrix of BAM file paths.
 #'
 #' @export
+#' 
+#' @import stringr
 list_bam_files <- function(base_directory) {
   bam_files <- lapply(Sys.glob(file.path(base_directory, 'process_data', 'align', '*.bam')), function(x) {
     if (!stringr::str_ends(x, '.unsorted.bam')) {
