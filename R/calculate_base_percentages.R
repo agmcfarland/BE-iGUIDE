@@ -7,7 +7,7 @@
 #' @param edit_site_strand The strand of the edit site ('+' or '-').
 #' @param bases_from_cut_site Number of bases to consider from the cut site.
 #'
-#' @return A data frame with counts and percentages of each base at each position.
+#' @return A data frame with counts and percentages of each base at each position. The number of aligned reads (depth) for each position is also reported.
 #'
 #' @export
 #'

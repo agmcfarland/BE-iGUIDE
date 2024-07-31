@@ -13,7 +13,12 @@
 #' Note: `pos` represents the start position of the alignment and is always on the left-hand side of the aligned read,
 #' regardless of the strand it mapped to.
 #'
+#' Outputted columns `edit_site_min` and `edit_site_max` are always relative to the plus strand of the genome. Therefore min is always less than
+#' max regardless of strand being edited and always relative to the plus strand.
+#'
 #' @param df_bam A data frame containing BAM alignments.
+#' @param specimen The iGUIDE specimen ID
+#' @param chromosome The chromosomal loocation of the edit site.
 #' @param edit_site_position The position of the edit site.
 #' @param edit_site_strand The strand of thee edit site ('+' or '-').
 #' @param allowed_bases_within_gRNA The number of base pairs allowed within the gRNA region. Default is 3.
@@ -24,10 +29,12 @@
 #' @export
 #'
 #' @import dplyr
-filter_bam_alignments <- function(df_bam, edit_site_position, edit_site_strand, allowed_bases_within_gRNA = 3, allowed_bases_outside_gRNA = 3) {
+filter_bam_alignments <- function(df_bam, specimen, chromosome, edit_site_position, edit_site_strand, allowed_bases_within_gRNA = 3, allowed_bases_outside_gRNA = 3) {
 
   df_bam_filtered <- df_bam %>%
     dplyr::filter(
+      specimen_id == specimen,
+      rname == chromosome,
       !stringr::str_detect(cigar, 'S'),
       !stringr::str_detect(cigar, 'D'))
 
@@ -55,7 +62,8 @@ filter_bam_alignments <- function(df_bam, edit_site_position, edit_site_strand, 
         flag == '83', # + strand cut
         aln_pos_end >= edit_site_min & aln_pos_end <= edit_site_max,
         pos < edit_site_position
-      )
+      ) %>%
+      dplyr::select(-aln_pos_end)
   }
 
   return(df_bam_filtered)
