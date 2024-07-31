@@ -9,6 +9,8 @@
 #' @return A data frame containing information from the BAM files.
 #'
 #' @import parallel
+#' 
+#' @export
 parallel_bam_file_list_to_table <- function(bam_file_list, scan_param_what_list = c('qname', 'rname', 'strand', 'pos', 'qwidth', 'seq', 'cigar', 'flag'), number_of_cpu = 4) {
 
   cl <- parallel::makeCluster(number_of_cpu)

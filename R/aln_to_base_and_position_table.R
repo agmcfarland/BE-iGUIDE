@@ -10,6 +10,8 @@
 #' @return A data frame with base, position, and qname.
 #'
 #' @import stringr
+#' 
+#' @export
 aln_to_base_and_position_table <- function(aln) {
   return(data.frame(
     'base' = stringr::str_split(aln$seq, '')[[1]],

@@ -10,6 +10,8 @@
 #' @return A data frame containing information about edit sites.
 #'
 #' @import dplyr stringr
+#' 
+#' @export
 make_edit_site_table <- function(ft_data_table, spec_info_combo_overview_table, abundance_cutoff = 3) {
   # Further modify the edit site dataframe
   df_edit_sites <- ft_data_table %>%

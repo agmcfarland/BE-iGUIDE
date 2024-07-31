@@ -42,7 +42,7 @@ test_that("filter_bam_alignments works negative strand", {
 
   testthat::expect_equal(base::unique(df_bam_filtered$edit_site_min < df_bam_filtered$edit_site_max), TRUE)
 
-  testthat::expect_equal(ncol(df_bam_filtered), ncol(df_expected_bam_filtered))
+  testthat::expect_equal(ncol(df_bam_filtered), ncol(readRDS(testthat::test_path('testdata', 'df_bam_filtered_example.rds'))))
 
   testthat::expect_equal(nrow(df_bam_filtered), 8)
 

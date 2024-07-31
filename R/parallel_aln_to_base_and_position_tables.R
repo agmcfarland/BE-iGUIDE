@@ -9,6 +9,8 @@
 #' @return A data frame with base, position, and qname.
 #'
 #' @import parallel
+#' 
+#' @export
 parallel_aln_to_base_and_position_tables <- function(df_bam_filtered, number_of_cpu = 4) {
 
   cl <- parallel::makeCluster(number_of_cpu)

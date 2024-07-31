@@ -1,8 +1,8 @@
 test_that("aln_to_base_and_position_table works", {
 
-  df_aln_pos_expected <- readRDS(file.path('tests', 'testthat', 'testdata', 'df_aln_pos_example.rds'))
+  df_aln_pos_expected <- readRDS(testthat::test_path('testdata', 'df_aln_pos_example.rds'))
 
-  df_bam_filtered_expected <- readRDS(file.path('tests', 'testthat', 'testdata', 'df_bam_filtered_example.rds'))
+  df_bam_filtered_expected <- readRDS(testthat::test_path('testdata', 'df_bam_filtered_example.rds'))
 
   df_bam_filtered_expected_nrow <- nrow(df_bam_filtered_expected)
 
