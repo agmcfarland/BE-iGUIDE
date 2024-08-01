@@ -6,10 +6,12 @@ sftp-config.json
 
 # Folders
 /create/
+/data-raw/
 
 #
 /.Rproj.user/
 
-/data-raw/
 tests/testthat/Rplots.pdf
 *.pptx
+
+/tests/quantify_edits/
