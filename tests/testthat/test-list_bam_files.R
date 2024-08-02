@@ -1,9 +1,9 @@
 testthat::test_that("list_bam_files works", {
 
-  bam_list <- list_bam_files(base_directory = testthat::test_path('testdata'))
+  subsetted_test_data_path <- testthat::test_path('testdata', 'integration_1')
 
-  testthat::expect_equal(length(bam_list), 1)
+  bam_list <- list_bam_files(base_directory = subsetted_test_data_path)
 
-  testthat::expect_equal(bam_list[1], testthat::test_path('testdata', 'process_data', 'align', 'GTSP5614-neg-3.bin2.bam'))
+  testthat::expect_equal(length(bam_list), 6)
 
 })

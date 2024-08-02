@@ -15,3 +15,5 @@ tests/testthat/Rplots.pdf
 *.pptx
 
 /tests/quantify_edits/
+
+/tests/testthat/integration_test_1/

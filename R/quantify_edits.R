@@ -72,6 +72,7 @@ quantify_edits <- function(
     spec_info_combo_overview_table = df_annotations,
     abundance_cutoff = run_params$abundance_cutoff)
 
+
   bam_files <- list_bam_files(base_directory = run_params$base_directory)
 
   logr::log_print(bam_files)
