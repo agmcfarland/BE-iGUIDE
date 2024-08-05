@@ -14,7 +14,7 @@
 #'
 #' @return Writes a CSV and RDS file containing base percentages to the specified output directory.
 #'
-#' @import logr dplyr
+#' @import logr dplyr stringr BSgenome GenomicRanges Biostrings
 #'
 #' @examples
 #' \dontrun{
@@ -39,9 +39,12 @@ quantify_edits <- function(
     end_distance_from_cut_site = 20,
     cut_site_start_distance_within_gRNA = 3,
     cut_site_start_distance_outside_gRNA = 3,
+    reference_genome_path = '',
     n_processors = 4,
     overwrite = TRUE
 ) {
+
+  library(BSgenome)
 
   run_params <- data.frame(
     'base_directory' = base_directory,
@@ -51,6 +54,7 @@ quantify_edits <- function(
     'end_distance_from_cut_site' = end_distance_from_cut_site,
     'cut_site_start_distance_within_gRNA' = cut_site_start_distance_within_gRNA,
     'cut_site_start_distance_outside_gRNA' = cut_site_start_distance_outside_gRNA,
+    'reference_genome_path' = reference_genome_path,
     'n_processors' = n_processors,
     'overwrite' = overwrite
   )
@@ -62,6 +66,8 @@ quantify_edits <- function(
   logr::log_open(file_name = file.path(run_params$analysis_output, 'BEiGUIDE_quantify_edits'), logdir = FALSE)
 
   logr::log_print(run_params)
+
+  check_reference_genome(run_params = run_params)
 
   df_ft_data <- pull_ft_data_tables(base_directory = run_params$base_directory)
 
@@ -125,13 +131,28 @@ quantify_edits <- function(
           edit_site_target = edit_site$target,
           edit_site_abund = edit_site$abund,
           edit_site_strand = edit_site$strand,
-          edit_site_chromsome = edit_site$chromosome,
+          edit_site_chromosome = edit_site$chromosome,
           edit_site_position = edit_site$position,
           specimen = edit_site$specimen
         )
     )
 
   }
+
+  # Get reference bases if specified
+
+  df_base_percentages_with_reference <- data.frame('empty' = 'empty')
+
+  if (file.exists(run_params$reference_genome_path)) {
+
+    genomic_sequence <- Biostrings::readDNAStringSet(run_params$reference_genome_path)
+
+    df_base_percentages_with_reference <- extract_reference_bases(genomic_sequence, df_base_percentages)
+
+    rm(genomic_sequence)
+  }
+
+  # Finalize datasets
 
   logr::log_print('Writing data')
 
@@ -142,6 +163,10 @@ quantify_edits <- function(
   write.csv(df_base_percentages, file.path(run_params$analysis_output, 'base_percentages.csv'), row.names = FALSE)
 
   saveRDS(df_base_percentages, file.path(run_params$analysis_output, 'base_percentages.rds'))
+
+  write.csv(df_base_percentages_with_reference, file.path(run_params$analysis_output, 'base_percentages_and_reference.csv'), row.names = FALSE)
+
+  saveRDS(df_base_percentages_with_reference, file.path(run_params$analysis_output, 'base_percentages_and_reference.rds'))
 
   logr::log_print('Finished')
 

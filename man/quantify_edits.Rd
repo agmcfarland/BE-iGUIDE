@@ -12,6 +12,7 @@ quantify_edits(
   end_distance_from_cut_site = 20,
   cut_site_start_distance_within_gRNA = 3,
   cut_site_start_distance_outside_gRNA = 3,
+  reference_genome_path = "",
   n_processors = 4,
   overwrite = TRUE
 )

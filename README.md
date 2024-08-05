@@ -17,3 +17,6 @@ devtools::install_github('agmcfarland/BEiGUIDE')
 
 # Usage
 
+```sh
+/home/ubuntu/miniconda3/envs/aavenger_r4_env/bin/Rscript -e "BEiGUIDE::quantify_edits('/data/BEiGUIDE/tests/testthat/testdata/integration_1', '/data/temp')"
+```
