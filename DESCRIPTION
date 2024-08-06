@@ -21,10 +21,15 @@ Config/testthat/edition: 3
 Depends: 
     R (>= 2.10)
 Imports: 
+    Biostrings,
+    BSgenome,
     dplyr,
+    GenomicRanges,
+    ggplot2,
     logr,
     parallel,
     Rsamtools,
+    ShortRead,
     stringr,
     tibble,
     tidyr
