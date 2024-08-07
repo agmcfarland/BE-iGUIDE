@@ -24,7 +24,7 @@ devtools::install_github('agmcfarland/BEiGUIDE')
 # Running within R
 
 ```R
-quantify_edits(
+BEiGUIDE::quantify_edits(
   base_directory = "path/to/base_directory",
   output_directory = "path/to/output_directory",
   analysis_name = "my_analysis",
@@ -32,6 +32,7 @@ quantify_edits(
   end_distance_from_cut_site = 25,
   cut_site_start_distance_within_gRNA = 4,
   cut_site_start_distance_outside_gRNA = 4,
+  reference_genome_path = 'path/to/genome.fasta',
   n_processors = 6,
   overwrite = FALSE
 )
@@ -60,6 +61,9 @@ cut_site_start_distance_within_gRNA:
 
 cut_site_start_distance_outside_gRNA:
 	Numeric. The distance outside gRNA to start considering cut sites (default: 3).
+
+reference_genome_path
+	Character. Path to a fasta file used to generate the base iGUIDE result (default: '').
 
 n_processors:
 	Numeric. The number of processors to use for parallel processing (default: 4).

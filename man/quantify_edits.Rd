@@ -32,6 +32,8 @@ quantify_edits(
 
 \item{cut_site_start_distance_outside_gRNA}{Numeric. The distance outside gRNA to start considering cut sites (default: 3).}
 
+\item{reference_genome_path}{Character. Path to a fasta file used to generate the base iGUIDE result (default: '').}
+
 \item{n_processors}{Numeric. The number of processors to use for parallel processing (default: 4).}
 
 \item{overwrite}{Logical. Whether to overwrite existing analysis output (default: TRUE).}
@@ -52,6 +54,7 @@ quantify_edits(
   end_distance_from_cut_site = 25,
   cut_site_start_distance_within_gRNA = 4,
   cut_site_start_distance_outside_gRNA = 4,
+  reference_genome_path = 'path/to/genome.fasta',
   n_processors = 6,
   overwrite = FALSE
 )
