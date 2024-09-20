@@ -47,6 +47,7 @@ quantify_edits <- function(
 ) {
 
   library(BSgenome)
+  library(logr)
 
   run_params <- data.frame(
     'base_directory' = base_directory,
