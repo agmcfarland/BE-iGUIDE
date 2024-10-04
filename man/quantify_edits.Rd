@@ -13,6 +13,10 @@ quantify_edits(
   cut_site_start_distance_within_gRNA = 3,
   cut_site_start_distance_outside_gRNA = 3,
   reference_genome_path = "",
+  editable_base = "A",
+  expected_edit = "G",
+  binomial_p_value_threshold = 0.05,
+  binomial_direction = "greater",
   n_processors = 4,
   overwrite = TRUE
 )
@@ -34,15 +38,23 @@ quantify_edits(
 
 \item{reference_genome_path}{Character. Path to a fasta file used to generate the base iGUIDE result (default: '').}
 
+\item{editable_base}{Character. The base that is being edited (default: 'A').}
+
+\item{expected_edit}{Character. The expected base after editing (default: 'G').}
+
+\item{binomial_p_value_threshold}{Numeric. The p-value threshold for determining significance using a binomial test (default: 0.05).}
+
+\item{binomial_direction}{Character. The direction of the binomial test ('greater', 'less', or 'two-sided') (default: 'greater').}
+
 \item{n_processors}{Numeric. The number of processors to use for parallel processing (default: 4).}
 
 \item{overwrite}{Logical. Whether to overwrite existing analysis output (default: TRUE).}
 }
 \value{
-Writes a CSV and RDS file containing base percentages to the specified output directory.
+Writes a CSV and RDS file containing base percentages and statistical results to the specified output directory.
 }
 \description{
-This function quantifies edits in sequencing data by processing BAM files, filtering alignments, and calculating base percentages at specific edit sites.
+This function quantifies edits in sequencing data by processing BAM files, filtering alignments, and calculating base percentages at specific edit sites. It performs statistical testing to determine the significance of edits.
 }
 \examples{
 \dontrun{
@@ -55,6 +67,10 @@ quantify_edits(
   cut_site_start_distance_within_gRNA = 4,
   cut_site_start_distance_outside_gRNA = 4,
   reference_genome_path = 'path/to/genome.fasta',
+  editable_base = 'C',
+  expected_edit = 'T',
+  binomial_p_value_threshold = 0.01,
+  binomial_direction = 'two-sided',
   n_processors = 6,
   overwrite = FALSE
 )

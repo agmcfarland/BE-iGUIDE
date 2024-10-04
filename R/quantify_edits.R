@@ -1,6 +1,6 @@
 #' Quantify Edits in Sequencing Data
 #'
-#' This function quantifies edits in sequencing data by processing BAM files, filtering alignments, and calculating base percentages at specific edit sites.
+#' This function quantifies edits in sequencing data by processing BAM files, filtering alignments, and calculating base percentages at specific edit sites. It performs statistical testing to determine the significance of edits.
 #'
 #' @param base_directory Character. The base directory where input data is located.
 #' @param output_directory Character. The directory where output data will be saved.
@@ -10,10 +10,14 @@
 #' @param cut_site_start_distance_within_gRNA Numeric. The distance within gRNA to start considering cut sites (default: 3).
 #' @param cut_site_start_distance_outside_gRNA Numeric. The distance outside gRNA to start considering cut sites (default: 3).
 #' @param reference_genome_path Character. Path to a fasta file used to generate the base iGUIDE result (default: '').
+#' @param editable_base Character. The base that is being edited (default: 'A').
+#' @param expected_edit Character. The expected base after editing (default: 'G').
+#' @param binomial_p_value_threshold Numeric. The p-value threshold for determining significance using a binomial test (default: 0.05).
+#' @param binomial_direction Character. The direction of the binomial test ('greater', 'less', or 'two-sided') (default: 'greater').
 #' @param n_processors Numeric. The number of processors to use for parallel processing (default: 4).
 #' @param overwrite Logical. Whether to overwrite existing analysis output (default: TRUE).
 #'
-#' @return Writes a CSV and RDS file containing base percentages to the specified output directory.
+#' @return Writes a CSV and RDS file containing base percentages and statistical results to the specified output directory.
 #'
 #' @import logr dplyr stringr BSgenome GenomicRanges Biostrings
 #'
@@ -28,6 +32,10 @@
 #'   cut_site_start_distance_within_gRNA = 4,
 #'   cut_site_start_distance_outside_gRNA = 4,
 #'   reference_genome_path = 'path/to/genome.fasta',
+#'   editable_base = 'C',
+#'   expected_edit = 'T',
+#'   binomial_p_value_threshold = 0.01,
+#'   binomial_direction = 'two-sided',
 #'   n_processors = 6,
 #'   overwrite = FALSE
 #' )
@@ -42,6 +50,10 @@ quantify_edits <- function(
     cut_site_start_distance_within_gRNA = 3,
     cut_site_start_distance_outside_gRNA = 3,
     reference_genome_path = '',
+    editable_base = 'A',
+    expected_edit = 'G',
+    binomial_p_value_threshold = 0.05,
+    binomial_direction = 'greater',
     n_processors = 4,
     overwrite = TRUE
 ) {
@@ -58,9 +70,33 @@ quantify_edits <- function(
     'cut_site_start_distance_within_gRNA' = cut_site_start_distance_within_gRNA,
     'cut_site_start_distance_outside_gRNA' = cut_site_start_distance_outside_gRNA,
     'reference_genome_path' = reference_genome_path,
+    'editable_base' = editable_base,
+    'expected_edit' = expected_edit,
+    'binomial_p_value_threshold' = binomial_p_value_threshold,
+    'binomial_direction' = binomial_direction,
     'n_processors' = n_processors,
     'overwrite' = overwrite
   )
+
+  # run_params <- data.frame(
+  #   'base_directory' = '/data/BEiGUIDE/data-raw/230705_MN01490_0144_A000H5KVFN',
+  #   'output_directory' = '/data/BEiGUIDE/temp',
+  #   'analysis_name' = 'quantify_edits',
+  #   'abundance_cutoff' = 5,
+  #   'end_distance_from_cut_site' = 20,
+  #   'cut_site_start_distance_within_gRNA' = 3,
+  #   'cut_site_start_distance_outside_gRNA' = 3,
+  #   'reference_genome_path' = '/data/iGUIDE/genomes/hg38.fasta',
+  #
+  #   'editable_base' = 'A',
+  #   'expected_edit' = 'G',
+  #
+  #   'binomial_p_value_threshold' = 0.05,
+  #   'binomial_direction' = 'greater',
+  #
+  #   'n_processors' = 8,
+  #   'overwrite' = TRUE
+  # )
 
   run_params$analysis_output <- file.path(run_params$output_directory, run_params$analysis_name)
 
@@ -80,7 +116,6 @@ quantify_edits <- function(
     ft_data_table = df_ft_data,
     spec_info_combo_overview_table = df_annotations,
     abundance_cutoff = run_params$abundance_cutoff)
-
 
   bam_files <- list_bam_files(base_directory = run_params$base_directory)
 
@@ -152,6 +187,21 @@ quantify_edits <- function(
 
     df_base_percentages_with_reference <- extract_reference_bases(genomic_sequence, df_base_percentages)
 
+    df_base_percentages_with_reference <- position_relative_to_cut_site(df_base_percentages_with_reference)
+
+    df_base_percentages_with_reference <- binomial_prop_edit_test(
+      df_base_percentages_with_reference,
+      p_value_threshold = run_params$binomial_p_value_threshold,
+      alternative_ = run_params$binomial_direction
+      )
+
+    df_edit_significance <- test_for_significant_edits(
+      df_base_percentages_with_reference,
+      editable_base = run_params$editable_base,
+      expected_edit = run_params$expected_edit,
+      pvalue_threshold = run_params$binomial_p_value_threshold
+      )
+
     rm(genomic_sequence)
   }
 
@@ -170,6 +220,10 @@ quantify_edits <- function(
   write.csv(df_base_percentages_with_reference, file.path(run_params$analysis_output, 'base_percentages_and_reference.csv'), row.names = FALSE)
 
   saveRDS(df_base_percentages_with_reference, file.path(run_params$analysis_output, 'base_percentages_and_reference.rds'))
+
+  write.csv(df_edit_significance, file.path(run_params$analysis_output, 'significant_edits.csv'), row.names = FALSE)
+
+  saveRDS(df_edit_significance, file.path(run_params$analysis_output, 'significant_edits.rds'))
 
   logr::log_print('Finished')
 

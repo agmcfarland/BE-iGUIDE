@@ -33,6 +33,10 @@ BEiGUIDE::quantify_edits(
   cut_site_start_distance_within_gRNA = 4,
   cut_site_start_distance_outside_gRNA = 4,
   reference_genome_path = 'path/to/genome.fasta',
+  editable_base = 'A',
+  expected_edit = 'G',
+  binomial_p_value_threshold = 0.05,
+  binomial_direction = 'greater',
   n_processors = 6,
   overwrite = FALSE
 )
@@ -64,6 +68,18 @@ cut_site_start_distance_outside_gRNA:
 
 reference_genome_path
 	Character. Path to a fasta file used to generate the base iGUIDE result (default: '').
+
+editable_base
+	Character. Base that can be edited by base editor (default: A).
+
+expected_edit
+	Character. The base that edtiable base will be turned into by base editor (default: G).
+
+binomial_p_value_threshold
+	Numeric. Significance threshold for binomial test of proportions to determine if percentage of edited base is significant (default: 0.05). 
+
+binomial_direction
+	Character. One of c('greater', 'less', 'two.sided'). The direction of the binomial test of proportions (default: 'greater').
 
 n_processors:
 	Numeric. The number of processors to use for parallel processing (default: 4).
